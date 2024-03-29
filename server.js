@@ -9,7 +9,7 @@ app.use(cors());
 app.use(express.json());
 
 //Connect to mongoDB
-mongoose.connect('mongodb://localhost/mern-stack-db', { useNewUrlParser: true, useUnifiedTopology: true }); 
+mongoose.connect('mongodb://0.0.0.0/mern-stack-db', { useNewUrlParser: true, useUnifiedTopology: true }); 
 
 // Define routes and middleware
 app.listen(PORT, () => {
@@ -30,7 +30,14 @@ app.get('/todos', async (req, res) => {
 
 // Create a new todo
 app.post('/todos', async (req, res) => {
-	const updatedTodo = await Todo.findByIdAndUpdate(req.params.id, req.body, { new: true });
+	const newTodo = new Todo(req.body);
+	await newTodo.save();
+	res.json(newTodo);
+});
+
+// Update an existing todo
+app.put('/todos/:id', async (req, res) => {
+	const updatedTodo = await Todo.findByIdAndUpdate(req.params.id, req.body, { new:true}); 
 	res.json(updatedTodo);
 });
 
